@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var datab *sql.DB
@@ -24,7 +26,6 @@ func database(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
 }
 
 func init_database(db_user string, db_passw string) (*sql.DB, error) {
@@ -46,7 +47,7 @@ func init_database(db_user string, db_passw string) (*sql.DB, error) {
 	}
 
 	fmt.Println("Connected to database " + ddb_name)
-	rows, err := db.Query("CREATE TABLE if not exists " + table_name + "(ID int NOT NULL AUTO_INCREMENT, pseudo CHAR(255), password CHAR(255), email char (255), date DATETIME);")
+	rows, err := db.Query("CREATE TABLE if not exists " + table_name + "(ID int NOT NULL AUTO_INCREMENT, pseudo CHAR(255), password CHAR(255), email char (255), date DATETIME, primary key(ID));")
 	if err != nil {
 		handle_err(err)
 		return nil, err

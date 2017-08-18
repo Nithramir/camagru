@@ -6,28 +6,30 @@ import (
 	"net/http"
 )
 
-func add_file(file string) (string, error) {
+func add_file(file string, w http.ResponseWriter) error {
 	response, err := ioutil.ReadFile(file)
-	return string(response), err
+	if err != nil {
+		handle_err(err)
+		return err
+	}
+	fmt.Fprintln(w, string(response))
+	return err
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
 	users, err := get_session(w, r)
 	fmt.Printf("%v", users)
-	response, err := add_file("ressources/header.html")
+	err = add_file("ressources/header.html", w)
 	if err != nil {
-		handle_err(err)
+		w.Write([]byte("Erreur"))
 		return
 	}
 
-	fmt.Fprintln(w, string(response))
-	response, err = add_file("ressources/footer.html")
+	err = add_file("ressources/footer.html", w)
 	if err != nil {
-		handle_err(err)
+		w.Write([]byte("Erreur"))
 		return
 	}
-
-	fmt.Fprintln(w, string(response))
 
 	print("good")
 }
